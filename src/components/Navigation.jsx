@@ -1,7 +1,7 @@
 import Logo from '../assets/face-recognition.svg';
 import Button from './Button';
 
-const Navigation = ({ handleImgURL, setImgText }) => {
+const Navigation = ({ handleImgURL, setImgText, signOut }) => {
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter') {
 			handleImgURL();
@@ -10,7 +10,7 @@ const Navigation = ({ handleImgURL, setImgText }) => {
 
 	return (
 		<nav className='py-2 px-8 lg:max-container w-full flex flex-1 justify-between items-center absolute z-10 bg-white font-montserrat font-medium leading-normal'>
-			<a className='cursor-pointer' href='/'>
+			<a className='cursor-pointer' href='/main'>
 				<img src={Logo} alt='logo' width={50} height={50} />
 			</a>
 
@@ -24,7 +24,7 @@ const Navigation = ({ handleImgURL, setImgText }) => {
 				/>
 				<Button onClick={() => handleImgURL()}>Submit</Button>
 			</div>
-			<Button backgroundColor='bg-red-500' scale shadow>
+			<Button backgroundColor='bg-red-500' scale shadow onClick={signOut}>
 				Sign Out
 			</Button>
 		</nav>

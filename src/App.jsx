@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Image from './components/Image';
 import SignUp from './components/SignUp';
@@ -105,17 +105,33 @@ export default function App() {
 		setValidImg(false);
 	};
 
+	//function to handle routing
+	const navigate = useNavigate();
+
+	const handleLogInRoute = () => {
+		navigate('/main');
+	};
+
+	const handleSignUpRoute = () => {
+		navigate('/sign-up');
+	};
+
+	const handleSignInRoute = () => {
+		navigate('/');
+	};
+
 	return (
 		<>
 			<main className='max-lg:max-container h-screen relative'>
 				<Routes>
 					<Route
-						path='/'
+						path='/main'
 						element={
 							<>
 								<Navigation
 									handleImgURL={handleImgURL}
 									setImgText={setImgText}
+									signOut={handleSignInRoute}
 								/>
 								<section className='flex h-full p-11 justify-center items-center bg-gray-50'>
 									<Image
@@ -129,8 +145,18 @@ export default function App() {
 							</>
 						}
 					/>
-					<Route path='sign-up' element={<SignUp />} />
-					<Route path='sign-up' element={<SignIn />} />
+					<Route
+						path='sign-up'
+						element={
+							<SignUp signUp={handleLogInRoute} signIn={handleSignInRoute} />
+						}
+					/>
+					<Route
+						path='/'
+						element={
+							<SignIn signIn={handleLogInRoute} signUp={handleSignUpRoute} />
+						}
+					/>
 				</Routes>
 			</main>
 		</>

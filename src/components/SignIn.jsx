@@ -1,6 +1,6 @@
 import Logo from '../assets/face-recognition.svg';
 
-const SignIn = () => {
+const SignIn = ({ signIn, signUp }) => {
 	return (
 		<div className='flex h-screen px-12 py-12 max-md:px-24'>
 			<div className='flex min-h-full flex-1 flex-col justify-center  lg:px-8'>
@@ -65,6 +65,7 @@ const SignIn = () => {
 							<button
 								type='submit'
 								className='flex w-full justify-center rounded-full bg-sky-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+								onClick={signIn}
 							>
 								Sign In
 							</button>
@@ -74,8 +75,8 @@ const SignIn = () => {
 					<p className='font-palanquin mt-10 text-center text-sm text-gray-500'>
 						Not a member?{' '}
 						<a
-							href='#'
-							className='font-semibold leading-6 text-sky-400 hover:text-sky-600'
+							onClick={signUp}
+							className='font-semibold leading-6 text-sky-400 hover:text-sky-600 cursor-pointer'
 						>
 							Sign Up
 						</a>
