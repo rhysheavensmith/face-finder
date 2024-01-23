@@ -1,13 +1,13 @@
-const Image = ({ validImg, imgURL, handleImgError, box }) => {
-	console.log(box);
+const Image = ({ imgURL, validImg, handleImgError, box, onImageLoad }) => {
 	return (
 		<div className='relative'>
 			{validImg ? (
 				<img
 					id='faceImage'
 					src={imgURL}
-					alt='people'
+					alt='Target'
 					onError={handleImgError}
+					onLoad={onImageLoad} // Trigger the load handler when the image loads
 					className='rounded-[5%] shadow-2xl h-[400px] max-md:h-[300px] w-auto'
 				/>
 			) : (
@@ -19,8 +19,8 @@ const Image = ({ validImg, imgURL, handleImgError, box }) => {
 				className='border-2 border-red-500 absolute'
 				style={{
 					top: box.topRow,
-					bottom: box.bottomRow,
 					right: box.rightCol,
+					bottom: box.bottomRow,
 					left: box.leftCol,
 				}}
 			></div>
