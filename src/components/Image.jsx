@@ -1,4 +1,5 @@
 const Image = ({ imgURL, validImg, handleImgError, box, onImageLoad }) => {
+	console.log(box);
 	return (
 		<div className='relative'>
 			{validImg ? (
@@ -15,15 +16,18 @@ const Image = ({ imgURL, validImg, handleImgError, box, onImageLoad }) => {
 					Image failed to load. Please check the URL.
 				</div>
 			)}
-			<div
-				className='border-2 border-red-500 absolute'
-				style={{
-					top: box.topRow,
-					right: box.rightCol,
-					bottom: box.bottomRow,
-					left: box.leftCol,
-				}}
-			></div>
+			{box.map((b, i) => (
+				<div
+					key={i}
+					className='border-2 rounded-xl border-red-500 absolute'
+					style={{
+						top: b.topRow,
+						right: b.rightCol,
+						bottom: b.bottomRow,
+						left: b.leftCol,
+					}}
+				></div>
+			))}
 		</div>
 	);
 };

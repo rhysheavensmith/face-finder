@@ -3,54 +3,46 @@ import Navigation from './components/Navigation';
 import Image from './components/Image';
 
 export default function App() {
-	// State for the image URL
+	// set the state for the img url
 	const [imgURL, setImgURL] = useState(
 		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkfvgn-SOCmOFh5LpUidVVEF3nKJUC5LS_lw&usqp=CAU'
 	);
-	const [imgText, setImgText] = useState(''); // State for the image URL text input
-	const [validImg, setValidImg] = useState(true); // State to check if the image URL is valid
-	const [box, setBox] = useState({}); // State for the bounding box dimensions
 
-	// Function to update the image URL and trigger the face detection process
+	// set the state for the img text (url entered into the text box)
+	const [imgText, setImgText] = useState('');
+
+	// set the state to check if the img is a valid url
+	const [validImg, setValidImg] = useState(true);
+
+	// set state for the box dimensions
+	const [box, setBox] = useState({});
+
+	// function that sets the img url to the text in the input
 	const handleImgURL = () => {
 		setValidImg(true);
 		setImgURL(imgText);
 	};
 
-	// Function to calculate the bounding box dimensions
 	const createFaceBox = (clarifaiJSON) => {
-		const face =
-			clarifaiJSON.outputs[0].data.regions[0].region_info.bounding_box;
-		const faceImage = document.getElementById('faceImage');
-		const width = Number(faceImage.width);
-		const height = Number(faceImage.height);
-		return {
-			leftCol: face.left_col * width,
-			topRow: face.top_row * height,
-			rightCol: width - face.right_col * width,
-			bottomRow: height - face.bottom_row * height,
-		};
+		return clarifaiJSON.outputs[0].data.regions.map((region) => {
+			const face = region.region_info.bounding_box;
+			const faceImage = document.getElementById('faceImage');
+			const width = Number(faceImage.width);
+			const height = Number(faceImage.height);
+			return {
+				leftCol: face.left_col * width,
+				topRow: face.top_row * height,
+				rightCol: width - face.right_col * width,
+				bottomRow: height - face.bottom_row * height,
+			};
+		});
 	};
 
-	// Function to display the bounding box
 	const displayFaceBox = (box) => {
 		setBox(box);
+		console.log(box);
 	};
 
-	// Function to handle the image load event
-	const handleImageLoad = () => {
-		// Call the API after the image has loaded
-		const requestOptions = apiRequest(imgURL);
-		fetch(
-			'https://api.clarifai.com/v2/models/face-detection/outputs',
-			requestOptions
-		)
-			.then((response) => response.json())
-			.then((result) => displayFaceBox(createFaceBox(result)))
-			.catch((error) => console.log('error', error));
-	};
-
-	// Function to prepare the API request
 	const apiRequest = (imgURL) => {
 		const PAT = 'ceb8838c4fe2492babb189ce18595c5c';
 		const USER_ID = 'nny4fhhxos0j';
@@ -58,18 +50,51 @@ export default function App() {
 		const IMAGE_URL = imgURL;
 
 		const raw = JSON.stringify({
-			user_app_id: { user_id: USER_ID, app_id: APP_ID },
-			inputs: [{ data: { image: { url: IMAGE_URL } } }],
+			user_app_id: {
+				user_id: USER_ID,
+				app_id: APP_ID,
+			},
+			inputs: [
+				{
+					data: {
+						image: {
+							url: IMAGE_URL,
+						},
+					},
+				},
+			],
 		});
-
-		return {
+		const requestOptions = {
 			method: 'POST',
-			headers: { Accept: 'application/json', Authorization: 'Key ' + PAT },
+			headers: {
+				Accept: 'application/json',
+				Authorization: 'Key ' + PAT,
+			},
 			body: raw,
 		};
+		return requestOptions;
 	};
 
-	// Function to handle image load errors
+	const handleImageLoad = () => {
+		fetch(
+			'https://api.clarifai.com/v2/models/face-detection/outputs',
+			apiRequest(imgURL)
+		)
+			.then((response) => response.json())
+			.then((result) => {
+				console.log('API Response:', result);
+				if (result.outputs && result.outputs[0].data.regions) {
+					displayFaceBox(createFaceBox(result));
+				} else {
+					throw new Error('No face data found in API response');
+				}
+			})
+			.catch((error) =>
+				console.error('Error during API call or data processing:', error)
+			);
+	};
+
+	// function to handle error case img urls
 	const handleImgError = () => {
 		setValidImg(false);
 	};
@@ -83,7 +108,7 @@ export default function App() {
 					validImg={validImg}
 					handleImgError={handleImgError}
 					box={box}
-					onImageLoad={handleImageLoad} // Pass the image load handler
+					onImageLoad={handleImageLoad}
 				/>
 			</section>
 		</main>
