@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Image from './components/Image';
+import SignUp from './components/SignUp';
+import SignIn from './components/SignIn';
 
 export default function App() {
 	// set the state for the img url
@@ -15,7 +18,7 @@ export default function App() {
 	const [validImg, setValidImg] = useState(true);
 
 	// set state for the box dimensions
-	const [box, setBox] = useState({});
+	const [box, setBox] = useState([]);
 
 	// function that sets the img url to the text in the input
 	const handleImgURL = () => {
@@ -24,6 +27,9 @@ export default function App() {
 	};
 
 	const createFaceBox = (clarifaiJSON) => {
+		if (!clarifaiJSON.outputs[0].data.regions) {
+			return [];
+		}
 		return clarifaiJSON.outputs[0].data.regions.map((region) => {
 			const face = region.region_info.bounding_box;
 			const faceImage = document.getElementById('faceImage');
@@ -100,17 +106,33 @@ export default function App() {
 	};
 
 	return (
-		<main className='max-lg:max-container h-screen relative'>
-			<Navigation handleImgURL={handleImgURL} setImgText={setImgText} />
-			<section className='flex h-full p-11 justify-center items-center bg-gray-50'>
-				<Image
-					imgURL={imgURL}
-					validImg={validImg}
-					handleImgError={handleImgError}
-					box={box}
-					onImageLoad={handleImageLoad}
-				/>
-			</section>
-		</main>
+		<>
+			<main className='max-lg:max-container h-screen relative'>
+				<Routes>
+					<Route
+						path='/'
+						element={
+							<>
+								<Navigation
+									handleImgURL={handleImgURL}
+									setImgText={setImgText}
+								/>
+								<section className='flex h-full p-11 justify-center items-center bg-gray-50'>
+									<Image
+										imgURL={imgURL}
+										validImg={validImg}
+										handleImgError={handleImgError}
+										box={box}
+										onImageLoad={handleImageLoad}
+									/>
+								</section>
+							</>
+						}
+					/>
+					<Route path='sign-up' element={<SignUp />} />
+					<Route path='sign-up' element={<SignIn />} />
+				</Routes>
+			</main>
+		</>
 	);
 }

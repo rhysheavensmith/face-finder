@@ -14,7 +14,7 @@ const Navigation = ({ handleImgURL, setImgText }) => {
 				<img src={Logo} alt='logo' width={50} height={50} />
 			</a>
 
-			<div className='border-2 py-1 pr-1 pl-2 rounded-full flex justify-between w-[700px] max-sm:w-[300px] max-lg:w-[400px]'>
+			<div className='border-2 py-1 pr-1 pl-2 rounded-full flex justify-between w-[700px] max-sm:w-[275px] max-lg:w-[400px]'>
 				<input
 					type='text'
 					placeholder='Submit an image URL'
