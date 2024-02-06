@@ -9,7 +9,7 @@ const Navigation = ({ handleImgURL, setImgText, signOut }) => {
 	};
 
 	return (
-		<nav className='py-2 px-8 lg:max-container w-full flex flex-1 justify-between items-center absolute z-10 bg-white font-montserrat font-medium leading-normal'>
+		<nav className='py-2 px-8 w-full flex flex-1 justify-between items-center absolute z-10 bg-white font-montserrat font-medium leading-normal'>
 			<a className='cursor-pointer' href='/main'>
 				<img src={Logo} alt='logo' width={50} height={50} />
 			</a>

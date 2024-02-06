@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import Navigation from './components/Navigation';
-import Image from './components/Image';
+import ImageApp from './components/ImageApp';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 
@@ -46,7 +45,6 @@ export default function App() {
 
 	const displayFaceBox = (box) => {
 		setBox(box);
-		console.log(box);
 	};
 
 	const apiRequest = (imgURL) => {
@@ -88,7 +86,6 @@ export default function App() {
 		)
 			.then((response) => response.json())
 			.then((result) => {
-				console.log('API Response:', result);
 				if (result.outputs && result.outputs[0].data.regions) {
 					displayFaceBox(createFaceBox(result));
 				} else {
@@ -108,15 +105,54 @@ export default function App() {
 	//function to handle routing
 	const navigate = useNavigate();
 
-	const handleLogInRoute = () => {
+	const handleSignUp = (event, userCredentials) => {
+		event.preventDefault();
+		fetch('http://localhost:3000/signup', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				email: userCredentials.email,
+				password: userCredentials.password,
+				id: Math.floor(Math.random() * 10000),
+			}),
+		});
+		console.log(userCredentials);
 		navigate('/main');
 	};
 
-	const handleSignUpRoute = () => {
+	const handleSignIn = (event, userCredentials) => {
+		event.preventDefault();
+		fetch('http://localhost:3000/signin', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				email: userCredentials.email,
+				password: userCredentials.password,
+			}),
+		})
+			.then((response) => {
+				if (response.ok) {
+					return response.json();
+				} else {
+					throw new Error('Invalid credentials');
+				}
+			})
+			.then(() => {
+				// Handle successful sign in
+				navigate('/main');
+			})
+			.catch((error) => {
+				// Handle sign in error
+				console.error('Sign in failed:', error.message);
+				alert('wrong credentials');
+			});
+	};
+
+	const handleSignUpPageRoute = () => {
 		navigate('/sign-up');
 	};
 
-	const handleSignInRoute = () => {
+	const handleSignInPageRoute = () => {
 		navigate('/');
 	};
 
@@ -127,34 +163,34 @@ export default function App() {
 					<Route
 						path='/main'
 						element={
-							<>
-								<Navigation
-									handleImgURL={handleImgURL}
-									setImgText={setImgText}
-									signOut={handleSignInRoute}
-								/>
-								<section className='flex h-full p-11 justify-center items-center bg-gray-50'>
-									<Image
-										imgURL={imgURL}
-										validImg={validImg}
-										handleImgError={handleImgError}
-										box={box}
-										onImageLoad={handleImageLoad}
-									/>
-								</section>
-							</>
+							<ImageApp
+								imgURL={imgURL}
+								validImg={validImg}
+								box={box}
+								handleImgError={handleImgError}
+								handleImageLoad={handleImageLoad}
+								handleImgURL={handleImgURL}
+								setImgText={setImgText}
+								handleSignInRoute={handleSignInPageRoute}
+							/>
 						}
 					/>
 					<Route
 						path='sign-up'
 						element={
-							<SignUp signUp={handleLogInRoute} signIn={handleSignInRoute} />
+							<SignUp
+								signUp={handleSignUp}
+								signInPage={handleSignInPageRoute}
+							/>
 						}
 					/>
 					<Route
 						path='/'
 						element={
-							<SignIn signIn={handleLogInRoute} signUp={handleSignUpRoute} />
+							<SignIn
+								signIn={handleSignIn}
+								signUpPage={handleSignUpPageRoute}
+							/>
 						}
 					/>
 				</Routes>

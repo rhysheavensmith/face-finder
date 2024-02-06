@@ -8,7 +8,7 @@ const Image = ({ imgURL, validImg, handleImgError, box, onImageLoad }) => {
 					alt='Target'
 					onError={handleImgError}
 					onLoad={onImageLoad} // Trigger the load handler when the image loads
-					className='rounded-[5%] shadow-2xl max-sm:w-[400px] w-[600px] h-auto'
+					className='rounded-[5%] shadow-2xl max-sm:h-[400px] h-[500px] w-auto'
 				/>
 			) : (
 				<div className='text-gray-700 text-center font-palanquin'>
