@@ -116,7 +116,6 @@ export default function App() {
 				id: Math.floor(Math.random() * 10000),
 			}),
 		});
-		console.log(userCredentials);
 		navigate('/main');
 	};
 
